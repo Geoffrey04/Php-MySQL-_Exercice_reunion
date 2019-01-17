@@ -1,111 +1,49 @@
-> Ce repo doit être directement cloné dans votre répertoire apache (/var/www/html ou htdocs ou etc. )
-# PHP & MySQL
+# Challenge PHP
 
-PHP c'est bien mais avec une base de données c'est mieux. Nous allons mettre en situation
-une utilisation de PHP et MYSQL.
-Cette [ressource](https://openclassrooms.com/courses/concevez-votre-site-web-avec-php-et-mysql/presentation-des-bases-de-donnees-2) va vous éclairez sur les bases de données.
-Après avoir fait la partie "Écrire les données", vous pourrez commencer l'activité.
+Nous avons vu du CRUD avec l'activité [randonnée](https://github.com/SimplonReunion/php-mysql-crud).
 
-# Objectif
+Certains actions du CRUD ne doivent pas être accessibles par n'importe qui : comme la mise à jour, la création et la suppression.
 
-Nous allons faire une web app qui va lister les randonnées à l'île de la Réunion.
+Dans ce challenge, nous allons mettre en place une protection sur nos pages *create.php, update.php, delete.php* de l'activité [randonnée](https://github.com/SimplonReunion/php-mysql-crud), pour laisser l'utilisation de ces fonctionnalités uniquement à des personnes enregistrées en base de données (les utilisateurs de confiance).
 
-# Création de la base de données
-Je vous ai créé la base de données. vous pouvez la récupérer *database/reunion_island.sql* pour l'importer. Comme vous l'avez déjà vu, c'est plus facile de le faire avec Phpmyadmmin.
+# Comment ça marche
 
-Cette base de données contient, pour l'instant, que la table *hiking* (randonnée)
+Avant tout, sachez que pour pouvoir faire cela, il faudra savoir utiliser les sessions en PHP. Ce [petit tutoriel](http://www.lephpfacile.com/cours/18-les-sessions) vous explique comment fonctionne les sessions et aussi le principe d'une page connexion et de déconnexion.
 
-# Remplir la base de données
+# Insérer des utilisateurs
 
-Pour commencer à travailler, c'est plus simple d'avoir déjà des données.
+Pour s'identifier, il faut déjà avoir des utilisateurs en base de données.
 
-C'est pourquoi vous allez remplir la table *hiking* à partir des données que
-vous allez récupérer sur le site internet [randopitons.re](https://www.randopitons.re)
+Avec phpmyadmin, ajoutez des utilisateurs en base de données.
 
-Il faut insérer 5 randonnées. Chaque randonnée devra renseigner les champs :
-* name
-* difficulty (très facile, facile, etc.)
-* distance
-* duration
-* height_difference (dénivelé)
+# Protections des pages
 
-# Afficher la liste des randonnées
+Au début de chaque page *create.php*, *update.php*, *delete.php* vérifiez que l'utilisateur soit connecté.
 
-Dans le fichier *read.php*, récupérez les randonnées directement de la base données et affichez-les dans un tableau.
+Pour faire cela c'est très simple. En se connectant vous avez dû enregistrer les informations de l'utilisateur dans une variable de session. Il suffit maintenant d'aller vérifier que la variable de session existe pour savoir si l'utilisateur est valide !
 
-Vous devez utiliser PHP bien sûr, mais aussi PDO.
+TIPS : Créer une fonction pour pouvoir la réutiliser au début de chaque pages concernées
 
-> Rappel : un fichier PHP ne s'ouvre dans le navigateur en faisant un glisser déposer ! Ça ne va pas fonctionner !
-Vous devez absolument passer par votre serveur apache local : http://localhost/ ou http://localhost:8000/ ou etc.
-
-TIPS : l'utilisation de la méthode ```query()``` de PDO est un bon début *(dans ce cas là)*
-
-# Ajouter une randonnée
-
-Vous devez maintenant ajouter une randonnée, mais pas par phpmyadmin, plutôt directement par une page prévue à cet effet.
-
-Ça tombe bien, il y a la page *create.php*. Il y a déjà le formulaire. Vous devez récupérer les informations envoyées par ce formulaire et les enregistrer
-dans la base de données.
-
-TIPS : Vous pouvez jetter un oeil aux méthodes ```exec()``` ou ```prepare()``` et ```execute``` de PDO.
-
-## Améliorations
-
-Quand vous avez réussi à ajouter une randonnée, c'est bien de le notifier par message.
-
-Si vous ne l'avez pas déjà fait, affichez le message "La randonnée a été ajoutée avec succès." quand la randonnée a été ajoutée avec succès :)
-
-Je vous laisse libre sur la manière d'afficher le message.
-
-# Modifier une randonnée
-
-Imaginons qu'on s'est trompé en rentrant les informations de la randonnée, il faudrait pouvoir la modifier après.
-
-Le fichier *update.php* a été créé pour ça.
-
-Tout d'abord, dans le tableau des randonnées du fichier *read.php*, ajoutez un lien sur le nom de chaque randonnée. Ce lien renverra vers la page *update.php*.
-
-Sur cette page on va pouvoir faire les modifications pour la randonnée choisie. Les champs du formulaire présents sur cette page doivent être pré-remplis à partir
-des informations de la randonnée choisie !
-
-TIPS : Afin de différencier les randonnées il faudra se baser sur l'id et peut-être (re)voir comment faire passer des variables entre des pages web.
-
-# Supprimer une randonnée
-
-Nous allons maintenant voir la dernière action, la suppression.
-
-Ajoutez un bouton *supprimer* dans le tableau sur chaque ligne de randonnées. En cliquant sur le bouton cela enverra le l'*id* de la randonnée à la page *delete.php*.
-
-Lorsque vous aurez supprimé il faudra revenir de façon automatique (sans que l'internaute ne fasse quoique ce soit) la page *read.php*.
-
-TIPS : Pour la redirection vers la page *read.php* vous devriez probablement jetez un coup d'oeil à la fonction [header()](http://php.net/manual/fr/function.header.php)
+> C'est un peu léger comme protection mais c'est pour que vous compreniez le principe.
 
 # ALLER PLUS LOIN
 
-Par cet exercice nous avons fait du CRUD (Create Read Update Delete). Ce sont les actions de bases que l'on peut effectuer sur les données en base.
+Si vous regardez en base de données vous verrez que les mots de passes sont stockés en "claires" on peut les lire. Pas top pour la sécurité.
+Il va falloir crypter le mot passe ! Sachez qu'il y a des fonctions faites pour ça. On va utiliser la fonction [sha1()](http://php.net/manual/fr/function.sha1.php)
 
-## Ajouter un nouveau champ
+Il faudra crypter le mot de passe dans la base de données. Dans phpmyadmin, lorsque vous entrez/éditer une ligne, vous pouvez voir la colonne *FONCTION*. Dans cette colonne vous choisissez *SHA1*. Après avoir effectué cela, vous pouvez voir que le mot de passe est une succession de chiffres et de lettres.
 
-Les sentiers sont parfois impraticables pour différentes raisons (pluies, éboulement,etc.). Ajoutez le champ *available* à la table *hiking*.
+Vous allez me dire qu'il y a un problème. Car lors de la connexion de l'utilisateur on compare le mot de passe avec ce qu'il y a dans le champ *password* de notre base de données et c'est clairement plus la même chose.
 
-Puisqu'on a nouveau champ, il faut l'ajouter à nos différentes pages :
-* dans le tableau de *read.php*
-* dans les formulaires de *create.php* et *update.php*
+Vous avez raison. C'est pourquoi, lors de la connexion, on utilise la fonction ```sha1()``` avec comme paramètre le mot de passe entrée par l'internaute. À cette fonction, si on lui passe le même paramètre, elle retourne le même résultat.
 
-## Contrôler les données du formulaires
+Pour résumer, dans le fichier qui vérifie les identifiants et les mots de passes, au moment de comparer les mots de passes il suffit d'utiliser la fonction ```sha1()```
 
-Il y'a des petits malins qui n'hésiteront pas à essayer de pirater votre application notamment en passant par le formulaire.
+Par exemple :
 
-Protéger vos arrières en vérifiant que chaque informations envoyées par le formulaire soient valides avant de la rentrée dans la base de données.
-
-Vérifiez que les champs *distance*, *height_difference* et *duration* soient des chiffres uniquement.
-
-Si vous avez utiliser la méthode ```query()``` ou ```exec()``` avec des variables, il faudra les remplacer par ```prepare()``` et ```execute()```. Ces méthodes sont plus sécurisées quand il s'agit de travailler avec des variables envoyées par l'internaute.
-
-*Il y a d'autres précautions à faire mais ça, ça sera pour une prochaine fois ;)*
-
-## Refactoriser le code
-
-Si vous avez mis, dans chaque fichier, la connexion à la base de données sachez qu'il y'a un moyen de factoriser tout ça en utilisant ```include()```. Maintenant que vous le savez, il vous reste plus qu'à le mettre en place :)
-
-C'est une possibilité de refactorisation, il y en a d'autres...
+```php
+//request to find the user in database
+$req = $bdd->prepare('SELECT nom FROM user WHERE username = ? AND password <= ?');
+//$username and $password are variable you got from the login form
+$req->execute(array($username, sha1($password)));
+```

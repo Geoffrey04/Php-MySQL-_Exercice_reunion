@@ -8,7 +8,7 @@
 <style>
 
     body {
-        background-image: url("https://cdn.pixabay.com/photo/2017/11/01/17/58/sunset-2908862_960_720.jpg");
+        background-image: url("https://static1.squarespace.com/static/58352289197aeac1e8c8ce6d/t/59fde6bcf9619a4291805ef7/1509811905873/hiking-gear-checklist");
         background-repeat: no-repeat;
         background-size: cover;
         font-size: 21px;
@@ -32,6 +32,8 @@
 </style>
     <?php
 
+    include "check_login.php" ;
+    echo "<a href='logout.php' class='logout'>Déconnexion</a>" ;
 
     $servername = 'localhost' ;
     $username = "root" ;

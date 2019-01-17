@@ -1,6 +1,8 @@
 <?php
 /**** Supprimer une randonnée ****/
 
+include "check_login.php" ;
+echo "<a href='logout.php' class='logout'>Déconnexion</a>" ;
 
 $servername = 'localhost' ;
 $username = "root" ;
